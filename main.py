@@ -9,5 +9,5 @@ from api import api
 api.init_app(app)
 
 if __name__ == '__main__':
-    app.run()
     create_table()
+    app.run()

@@ -11,7 +11,7 @@ app = Flask(__name__)
 def connect_db():
     """Connects to sqlite database."""
     try:
-        con = sqlite3.connect('./Flask-backend/database.db')
+        con = sqlite3.connect('database.db')
     except:
         print("database.db connection failed")
     finally:
@@ -35,9 +35,9 @@ def create_table():
 
 def insert_db(data):
     """Add a new entry to the table."""
+    con = connect_db()
+    cur = con.cursor()
     try:
-        con = connect_db()
-        cur = con.cursor()
         cur.execute("INSERT or IGNORE into my_table (name, value) VALUES (?, ?)",
                     (data['name'], data['value']))
         con.commit()
@@ -49,28 +49,29 @@ def insert_db(data):
 
 def get_db():
     """Get all items from the table."""
-    meds = []
+    items = []
+    con = connect_db()
+    cur = con.cursor()
     try:
-        con = connect_db()
-        cur = con.cursor()
         cur.execute("SELECT * FROM my_table")
         database_data = cur.fetchall()
 
         for data in database_data:
             dict = {"name": data[0], "value": data[1]}
-            meds.append(dict)
+            items.append(dict)
 
     except:
         print("Error: unable to fetch database")
     finally:
         con.close()
-    return meds
+    return items
 
 def get_by_name(name):
     """Get item data by name."""
+    con = connect_db()
+    cur = con.cursor()
     try:
-        con = connect_db()
-        cur = con.cursor()
+        
         cur.execute(f"SELECT * FROM my_table WHERE name= ?;",(name,))
         row = cur.fetchall()
     except:
@@ -114,15 +115,3 @@ def delete_db(name):
 # update_db(update_test)
 # delete_db("test")
 # print(get_db())
-
-
-
-
-
-
-
-
-
-
-
-
